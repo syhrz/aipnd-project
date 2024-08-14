@@ -30,7 +30,12 @@ class Config:
         self.img_center_crop = 224
         self.img_batch_size = 64
 
-    def update_from_args(self, args):
+        self.model_checkpoint_path = ""
+        self.image_path = ""
+        self.train_batch_size = 0
+        self.valid_batch_size = 0
+
+    def update_from_train_args(self, args):
         """Update configuration from parsed command-line arguments."""
         self.architecture = args.architecture
         self.data_dir = args.data_dir
@@ -46,19 +51,51 @@ class Config:
         self.log_frequency = args.log_frequency
 
         # Validate configuration settings
+        self._validate()
+
+    def init_from_predict_args(self, args):
+        """Update configuration from parsed command-line
+        arguments for prediction.
+        """
+        self.model_checkpoint_path = args.model_checkpoint_path
+        self.image_path = args.image_path
+
+    def update_from_predict_args(self, args):
+        """Update configuration from parsed command-line
+        arguments for prediction.
+        """
+
+        # Optionally override architecture settings if provided
+        if args.architecture:
+            self.architecture = args.architecture
+        if args.dropout_probability:
+            self.dropout_probability = args.dropout_probability
+        if args.learning_rate:
+            self.learning_rate = args.learning_rate
+        if args.epochs:
+            self.epochs = args.epochs
+        if args.train_batch_size:
+            self.train_batch_size = args.train_batch_size
+        if args.valid_batch_size:
+            self.valid_batch_size = args.valid_batch_size
+
+        # Validate configuration settings
+        self._validate()
+
+    def _validate(self):
+        """Private method to validate the configuration settings."""
         if self.hidden_layers and len(self.hidden_layers) != len(
             self.hidden_layer_size.get(self.architecture, [])
         ):
-            msg = (
-                "The number of hidden layers doesn't match the "
-                "expected size for the chosen architecture."
+            raise ValueError(
+                "The number of hidden layers doesn't match "
+                "the expected size for the chosen architecture."
             )
-            raise ValueError(msg)
         if self.learning_rate <= 0:
             msg = "The learning rate must be greater than 0."
             raise ValueError(msg)
         if not (0 < self.dropout_probability < 1):
-            msg = "The dropout probability must be between 0 and 1."
+            msg = ("The dropout probability must be between 0 and 1.")
             raise ValueError(msg)
         if self.epochs <= 0:
             msg = "The number of epochs must be greater than 0."
@@ -68,7 +105,7 @@ class Config:
             raise ValueError(msg)
 
 
-def read_args(data_dir=None, checkpoint_dir=None, supported_models=None):
+def read_train_args(supported_models=None):
     """Parse command-line arguments and validate them."""
     if supported_models is None:
         raise ValueError("supported_models must be provided.")
@@ -176,5 +213,44 @@ def read_args(data_dir=None, checkpoint_dir=None, supported_models=None):
     if args.learning_rate <= 0:
         msg = "The learning rate must be greater than 0."
         parser.error()
+
+    return args
+
+
+def read_predict_args():
+    # Create parser
+    parser = argparse.ArgumentParser(
+        description="Parse input arguments for model prediction"
+    )
+
+    # Required argument for checkpoint directory
+    parser.add_argument(
+        "-m", "--model_checkpoint_path",
+        type=str,
+        default=False,
+        help=(
+            "path to JSON file for mapping between "
+            "class values and category names"
+        ),
+    )
+
+    # Required argument for image path
+    parser.add_argument(
+        "-i", "--image_path",
+        type=str,
+        default=False,
+        help="Path to an image file",
+    )
+
+    # Optional argument to enable GPU mode
+    parser.add_argument(
+        "--gpu",
+        action="store_true",
+        default=False,
+        help="Enable GPU mode (default: False)",
+    )
+
+    # Parse the arguments
+    args = parser.parse_args()
 
     return args

@@ -9,7 +9,7 @@ import torch
 from torch import nn, optim
 from torchvision import datasets, models, transforms
 
-from helper import Config, read_args
+from helper import Config, read_train_args
 
 # Initialize Logger
 log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -19,7 +19,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-file_handler = logging.FileHandler("logs/console.log")
+file_handler = logging.FileHandler("logs/train.log")
 formatter = logging.Formatter(log_format)
 file_handler.setFormatter(formatter)
 
@@ -352,13 +352,15 @@ if __name__ == "__main__":
     supported_models = ["densenet121", "densenet161", "vgg16"]
 
     # get input arguments and print
-    args = read_args(supported_models=supported_models)
+    args = read_train_args(supported_models=supported_models)
+
+    logger.info(f"args: {args}")
 
     # Create a Config instance
     config = Config()
 
     # Update config based on arguments
-    config.update_from_args(args)
+    config.update_from_train_args(args)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
