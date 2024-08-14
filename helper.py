@@ -117,7 +117,7 @@ def read_train_args(supported_models=None):
 
     # Positional argument for data directory
     parser.add_argument(
-        "--data_dir",
+        "-d", "--data_dir",
         type=str,
         nargs="?",
         default="data",
@@ -156,7 +156,7 @@ def read_train_args(supported_models=None):
 
     # Optional argument for dropout probability
     parser.add_argument(
-        "-d",
+        "-dp",
         "--dropout_probability",
         type=float,
         default=0.3,
@@ -165,7 +165,7 @@ def read_train_args(supported_models=None):
 
     # Optional argument for hidden layers
     parser.add_argument(
-        "-hu",
+        "-hl",
         "--hidden_layers",
         type=str,
         default=None,
