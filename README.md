@@ -60,3 +60,10 @@ There are several logs under this project that located under `logs` directory
 - console.log, logs from the notebook.
 - train.log, logs from the train CLI script.
 - predict.log, logs from the prediction CLI script.
+
+# References
+
+https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
+https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.subplot2grid.html
+https://github.com/atan4583/aipnd-project/tree/master
+https://github.com/cjimti/aipnd-project/tree/master
