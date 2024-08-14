@@ -96,8 +96,8 @@ def predict(image_path, model, topk=5):
     # model.eval()
 
     # # Ensure the model is on the same device as the image tensor
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # model.to(device)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
 
     # Preprocess and load the image (assume the function returns a tensor)
     image_tensor = process_image(image_path).unsqueeze(0).to(device)
@@ -143,11 +143,10 @@ if __name__ == "__main__":
     logger.info(f"CUDA Available: {torch.cuda.is_available()}")
     logger.info(f"Selected device: {device}")
     logger.info(f"args: {args}")
-    logger.info(f"config: {config}")
 
     top_probabilities, top_classes = predict(
         config.image_path,
-        config.model_checkpoint_path
+        model
     )
 
     # logger.info(f"Correct Class: {correct_class}")
