@@ -52,3 +52,11 @@ It will generate a checkpoint at `checkpoint` directory with naming `<timedate>_
 $ ./predict.py -m checkpoint/<timedate>_<model_architecture>.pth -i data/flowers/valid/1/image_06739.jpg
 
 ```
+
+# Logging
+
+There are several logs under this project that located under `logs` directory
+
+- console.log, logs from the notebook.
+- train.log, logs from the train CLI script.
+- predict.log, logs from the prediction CLI script.
